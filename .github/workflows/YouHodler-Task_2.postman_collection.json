@@ -60,7 +60,7 @@
 						"json"
 					]
 				},
-				"description": "The URL **https://ipinfo.io/json** returns information about the IP address that is currently being used by the local machine.\n\nThis request is used mainly for assigning values for the collection variables that will be used in the \"Test IP Data\" request for validations."
+				"description": "The URL [<b>https://ipinfo.io/json</b>](https://ipinfo.io/json) returns information about the IP address that is currently being used by the local machine.\n\nThis request is used mainly for assigning values for the collection variables that will be used in the \"Test Current IP Data\" request for validations."
 			},
 			"response": []
 		},
