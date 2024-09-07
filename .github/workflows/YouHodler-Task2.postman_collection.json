@@ -1,0 +1,434 @@
+{
+	"info": {
+		"_postman_id": "97f71f02-027d-4683-b1c7-38795704a4a9",
+		"name": "YouHodler - Task 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5812296"
+	},
+	"item": [
+		{
+			"name": "Setup Data From Current IP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Setup mandatory attribute test variables\r",
+							"pm.collectionVariables.set(\"currentIpAddress\", response.ip);\r",
+							"pm.collectionVariables.set(\"testedIpCity\", response.city);\r",
+							"pm.collectionVariables.set(\"testedIpRegion\", response.region);\r",
+							"pm.collectionVariables.set(\"testedIpCountry\", response.country);\r",
+							"pm.collectionVariables.set(\"testedIpLocation\", response.loc);\r",
+							"pm.collectionVariables.set(\"testedIpTimezone\", response.timezone);\r",
+							"pm.collectionVariables.set(\"testedIpReadme\", response.readme);\r",
+							"\r",
+							"// Setup optional attributes test variables\r",
+							"if (response.hostname) {\r",
+							"    pm.collectionVariables.set(\"testedIpHostname\", response.hostname);\r",
+							"}\r",
+							"\r",
+							"if (response.postal) {\r",
+							"    pm.collectionVariables.set(\"testedIpPostal\", response.postal);\r",
+							"}\r",
+							"\r",
+							"if (response.org) {\r",
+							"    pm.collectionVariables.set(\"testedIpOrg\", response.org);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://ipinfo.io/json",
+					"protocol": "https",
+					"host": [
+						"ipinfo",
+						"io"
+					],
+					"path": [
+						"json"
+					]
+				},
+				"description": "The URL **https://ipinfo.io/json** returns information about the IP address that is currently being used by the local machine.\n\nThis request is used mainly for assigning values for the collection variables that will be used in the \"Test IP Data\" request for validations."
+			},
+			"response": []
+		},
+		{
+			"name": "Test Current IP Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Test response status code is 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Response body tests\r",
+							"\r",
+							"// Testing if the right json schema has returned\r",
+							"pm.test(\"Schema is valid\", function() {\r",
+							"    const schema = {\r",
+							"        type: 'object',\r",
+							"        properties: {\r",
+							"            ip: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            hostname: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            city: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            region: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            country: {\r",
+							"                type: 'string',\r",
+							"                pattern: '^[A-Z]{2}$'\r",
+							"            },\r",
+							"            loc: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            org: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            timezone: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            postal: {\r",
+							"                trype: 'string'\r",
+							"            },\r",
+							"            readme: {\r",
+							"                type: 'string'\r",
+							"            }\r",
+							"        },\r",
+							"        \"required\": [\"ip\", \"city\", \"region\", \"country\", \"loc\", \"timezone\", \"readme\"],\r",
+							"        \"additionalProperties\": false\r",
+							"    };\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"// Testing the data returned is as expected\r",
+							"pm.test(\"Test the correct IP address is displayed\", function() {\r",
+							"    pm.expect(response.ip).to.eql(pm.collectionVariables.get('currentIpAddress'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test the correct city is displayed\", function() {\r",
+							"    pm.expect(response.city).to.eql(pm.collectionVariables.get('testedIpCity'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test the correct region is displayed\", function() {\r",
+							"    pm.expect(response.region).to.eql(pm.collectionVariables.get('testedIpRegion'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test the correct country is displayed\", function() {\r",
+							"    pm.expect(response.country).to.eql(pm.collectionVariables.get('testedIpCountry'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test the correct location is displayed\", function() {\r",
+							"    pm.expect(response.loc).to.eql(pm.collectionVariables.get('testedIpLocation'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test the correct organization is displayed\", function() {\r",
+							"    pm.expect(response.org).to.eql(pm.collectionVariables.get('testedIpOrg'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test the correct timezone is displayed\", function() {\r",
+							"    pm.expect(response.timezone).to.eql(pm.collectionVariables.get('testedIpTimezone'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Test the correct readme is displayed\", function() {\r",
+							"    pm.expect(response.readme).to.eql(pm.collectionVariables.get('testedIpReadme'))\r",
+							"});\r",
+							"\r",
+							"// Headers test\r",
+							"pm.test(\"Test date header data type\", function() {\r",
+							"    let dateHeader = pm.response.headers.get(\"date\");\r",
+							"    pm.expect(dateHeader).to.not.be.null;\r",
+							"    let parseDate = new Date(dateHeader);\r",
+							"    pm.expect(parseDate.toString()).to.not.be.null;\r",
+							"}); \r",
+							"\r",
+							"pm.test(\"Test content length\", function() {\r",
+							"    let contentLength = parseInt(pm.response.headers.get(\"Content-Length\"));\r",
+							"    pm.expect(contentLength).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"// Clear all collection variables\r",
+							"const allCollectionVariables = pm.collectionVariables.toObject();\r",
+							"\r",
+							"Object.keys(allCollectionVariables).forEach((variable) => {\r",
+							"    pm.collectionVariables.set(variable, \"\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://ipinfo.io/{{currentIpAddress}}/json",
+					"protocol": "https",
+					"host": [
+						"ipinfo",
+						"io"
+					],
+					"path": [
+						"{{currentIpAddress}}",
+						"json"
+					]
+				},
+				"description": "Testing the currently used IP address data makes use of the previous request collection variables initialization and makes assertions to the response data of the request to this specific IP address that was initialized in the previos request - [https://ipinfo.io/**{{testedIpAddress}}**/json](https://ipinfo.io/**%7B%7BtestedIpAddress%7D%7D**/json)\n\n**Thetefor, it must run right after the request \"Setup Data From Current IP\".**\n\nIt will initially check for response status code. Then it will make some tests over the actual json schema response, and to the actual response data against the previously initialized collection variables, followed by a couple of tests to the headers.\n\nLast for loop will make sure to clear all the collection variables, to not interrupt with upcoming tests."
+			},
+			"response": []
+		},
+		{
+			"name": "Test Random IP Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Test response status code is 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test if the right json schema has returned\r",
+							"pm.test(\"Schema is valid\", function() {\r",
+							"    const schema = {\r",
+							"        type: 'object',\r",
+							"        properties: {\r",
+							"            ip: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            hostname: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            city: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            region: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            country: {\r",
+							"                type: 'string',\r",
+							"                pattern: '^[A-Z]{2}$'\r",
+							"            },\r",
+							"            loc: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            org: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            timezone: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            postal: {\r",
+							"                type: 'string'\r",
+							"            },\r",
+							"            readme: {\r",
+							"                type: 'string'\r",
+							"            }\r",
+							"        },\r",
+							"        \"required\": [\"ip\", \"city\", \"region\", \"country\", \"loc\", \"timezone\", \"readme\"],\r",
+							"        \"additionalProperties\": false\r",
+							"    };\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"// Test if location coordinates pattern is correct\r",
+							"pm.test(\"Verify location coordinates pattern\", function() {\r",
+							"    const coordRegex = /^-?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)\\s*,\\s*-?((1[0-7]\\d|[1-9]?\\d)(\\.\\d+)?|180(\\.0+)?)$/;\r",
+							"    pm.expect(response.loc).to.match(coordRegex);\r",
+							"});\r",
+							"\r",
+							"// Test the readme value is as expected\r",
+							"pm.test(\"Verify readme value\", function() {\r",
+							"    pm.expect(response.readme).to.eql(\"https://ipinfo.io/missingauth\")\r",
+							"});\r",
+							"\r",
+							"// Test required attributes are not empty\r",
+							"pm.test(\"Verify attributes are not empty\", function() {\r",
+							"    pm.expect(response.ip).to.not.be.empty;\r",
+							"    pm.expect(response.city).to.not.be.empty;\r",
+							"    pm.expect(response.region).to.not.be.empty;\r",
+							"    pm.expect(response.country).to.not.be.empty;\r",
+							"    pm.expect(response.loc).to.not.be.empty;\r",
+							"    pm.expect(response.timezone).to.not.be.empty;\r",
+							"    pm.expect(response.readme).to.not.be.empty;\r",
+							"})\r",
+							"\r",
+							"// Clear all collection variables\r",
+							"const allCollectionVariables = pm.collectionVariables.toObject();\r",
+							"\r",
+							"Object.keys(allCollectionVariables).forEach((variable) => {\r",
+							"    pm.collectionVariables.set(variable, \"\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate a random IP address - avoiding Bogon IPs\r",
+							"function generateRandomIp() {\r",
+							"    let ip;\r",
+							"\r",
+							"    // Define ranges to avoid\r",
+							"    const privateRanges = [\r",
+							"        { start: [10, 0, 0, 0], end: [10, 255, 255, 255] },\r",
+							"        { start: [172, 16, 0, 0], end: [172, 31, 255, 255] },\r",
+							"        { start: [192, 168, 0, 0], end: [192, 168, 255, 255] }\r",
+							"    ];\r",
+							"\r",
+							"    const reservedRanges = [\r",
+							"        { start: [0, 0, 0, 0], end: [0, 255, 255, 255] },\r",
+							"        { start: [127, 0, 0, 0], end: [127, 255, 255, 255] },\r",
+							"        { start: [169, 254, 0, 0], end: [169, 254, 255, 255] },\r",
+							"        { start: [240, 0, 0, 0], end: [255, 255, 255, 255] }\r",
+							"    ];\r",
+							"\r",
+							"    // Class D (Multicast) IP Range\r",
+							"    const multicastRange = { start: [224, 0, 0, 0], end: [239, 255, 255, 255] };\r",
+							"\r",
+							"    function isInRange(ipParts, ranges) {\r",
+							"        return ranges.some(range => {\r",
+							"            const [start, end] = [range.start, range.end];\r",
+							"            return ipParts.every((part, i) => part >= start[i] && part <= end[i]);\r",
+							"        });\r",
+							"    }\r",
+							"\r",
+							"    function getRandomIpParts() {\r",
+							"        return Array.from({ length: 4 }, () => Math.floor(Math.random() * 256));\r",
+							"    }\r",
+							"\r",
+							"    do {\r",
+							"        ip = getRandomIpParts();\r",
+							"    } while (isInRange(ip, privateRanges) || isInRange(ip, reservedRanges) || isInRange(ip, [multicastRange]));\r",
+							"\r",
+							"    return ip.join('.');\r",
+							"}\r",
+							"\r",
+							"// Generate the random IP\r",
+							"const randomIp = generateRandomIp();\r",
+							"\r",
+							"// Set the random IP as a collection variable\r",
+							"pm.collectionVariables.set(\"randomIp\", randomIp);\r",
+							"\r",
+							"// Log the random IP to the console for debugging\r",
+							"console.log(\"Random IP generated:\", randomIp);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://ipinfo.io/{{randomIp}}/json",
+					"protocol": "https",
+					"host": [
+						"ipinfo",
+						"io"
+					],
+					"path": [
+						"{{randomIp}}",
+						"json"
+					]
+				},
+				"description": "Test Random IP address differs from testing the current IP address in the way that we don't have the expected data to validate the response data with.  \nIn this set of tests, the focus goes more to validating the json schema, the attributes are being populated with some data, and that the expected patterns of data are as expected, as well as checking the status code of the response of course."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "currentIpAddress",
+			"value": ""
+		},
+		{
+			"key": "testedIpCity",
+			"value": ""
+		},
+		{
+			"key": "testedIpRegion",
+			"value": ""
+		},
+		{
+			"key": "testedIpCountry",
+			"value": ""
+		},
+		{
+			"key": "testedIpLocation",
+			"value": ""
+		},
+		{
+			"key": "testedIpOrg",
+			"value": ""
+		},
+		{
+			"key": "testedIpTimezone",
+			"value": ""
+		},
+		{
+			"key": "testedIpReadme",
+			"value": ""
+		},
+		{
+			"key": "testedIpHostname",
+			"value": ""
+		},
+		{
+			"key": "randomIp",
+			"value": ""
+		}
+	]
+}
