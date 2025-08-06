@@ -1,4 +1,4 @@
-## YouHodler Assignment
+## Test Assignment
 
 **Task 1 - Validation logic - web form**\
 Word file can be downloaded [here](https://github.com/ZivGadri/YouHodler-Task2/blob/main/Tasks/YouHodler-Task_1.docx)
